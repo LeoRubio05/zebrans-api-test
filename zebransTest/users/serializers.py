@@ -28,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password2', 'date_of_birth']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password2', 'date_of_birth', 'is_staff']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -43,7 +43,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            date_of_birth=validated_data['date_of_birth'])
+            date_of_birth=validated_data['date_of_birth'],
+            is_staff=validated_data['is_staff'])
         user.set_password(validated_data['password'])
         user.save()
 
@@ -53,7 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'date_of_birth']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'date_of_birth', 'is_staff']
 
 
 class UpdateSerializer(serializers.ModelSerializer):
@@ -65,10 +66,11 @@ class UpdateSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     date_of_birth = serializers.DateField()
+    is_staff = serializers.BooleanField()
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'password2', 'date_of_birth']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'password2', 'date_of_birth', 'is_staff']
 
     def validate(self, attrs):
         if 'username' not in attrs or attrs['username'] is None:
@@ -84,12 +86,12 @@ class UpdateSerializer(serializers.ModelSerializer):
         user.username = validated_data['username'],
         user.first_name = validated_data['first_name']
         user.last_name = validated_data['last_name']
-        user.email = validated_data['email'],
+        user.email = validated_data['email']
+        user.is_staff = validated_data['is_staff']
         birthday = validated_data['date_of_birth'].strftime('%Y-%m-%d')
 
         print('NACIMIENTO', birthday, type(birthday))
 
-        user.date_of_birth = str(birthday),
         user.set_password(validated_data['password'])
         user.save()
 
