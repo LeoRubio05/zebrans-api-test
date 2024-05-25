@@ -1,1 +1,1 @@
- web: gunicorn zebranstest.wsgi
+ web: gunicorn zebransTest.wsgi
